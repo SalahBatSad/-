@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from 'react'; // <-- أضف useEffect
+export default function CustomerAuthModal({ onClose, onLoginSuccess, initialTab }) {
+  // تحديد الحالة المبدئية بناءً على اللي وصلنا من App.jsx
+  const [isRegister, setIsRegister] = useState(initialTab === 'register');
 
-export default function CustomerAuthModal({ onClose, onLoginSuccess }) {
-  const [isRegister, setIsRegister] = useState(false);
+  // التأكد من تحديث الحالة لو تغيرت التبويبة والنافذة مفتوحة
+  useEffect(() => {
+    setIsRegister(initialTab === 'register');
+  }, [initialTab]);
   const [showPassword, setShowPassword] = useState(false); // 👁️ حالة إظهار/إخفاء كلمة المرور
   const [error, setError] = useState('');
   
@@ -121,7 +126,26 @@ export default function CustomerAuthModal({ onClose, onLoginSuccess }) {
 
         {/* الهيدر */}
         <div className="text-center mb-6">
-          <span className="text-3xl">👑</span>
+          {/* اسم البراند - تأثير الحفر الأسود اللامع */}
+          {/* اسم البراند - لون أسود محفور وخط مختلف */}
+          {/* اسم البراند - أسود محفور، خط مايل ومليان حلاوة */}
+          {/* اسم البراند - خط عربي انسيابي، أسود محفور بحجم متناسق */}
+          {/* اسم البراند - خط عربي انسيابي، أسود ميتاليك لامع ومحفور */}
+          {/* اسم البراند - أسود لامع بأطراف براقة ومحفورة */}
+          <h1 
+            className="text-2xl md:text-3xl font-bold mb-2 select-none tracking-wide"
+            style={{
+              background: 'linear-gradient(180deg, #2a2a2a 0%, #000000 50%, #151515 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              WebkitTextStroke: '0.6px rgba(212, 175, 55, 0.85)', // تحديد الأطراف بلمعة ذهبية ميتاليك
+              filter: 'drop-shadow(0px 0px 2px rgba(212, 175, 55, 0.6)) drop-shadow(0px 2px 4px rgba(0,0,0,0.95))', // إضاءة الأطراف + ظل الحفر
+              fontFamily: '"Aref Ruqaa", "Reem Kufi", serif'
+            }}
+          >
+            عطورنا
+          </h1>
+          
           <h2 className="text-2xl font-black text-gold-gradient mt-2">
             {isRegister ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
           </h2>
@@ -174,12 +198,12 @@ export default function CustomerAuthModal({ onClose, onLoginSuccess }) {
           {isRegister && (
             <>
               <div>
-                <label className="block text-xs font-bold text-gray-300 mb-1">رقم الهاتف (10 أرقام تبدأ بـ 05)</label>
+                <label className="block text-xs font-bold text-gray-300 mb-1">رقم الهاتف </label>
                 <input 
                   type="tel" 
                   name="phone"
                   required 
-                  placeholder="059XXXXXXX"
+                  placeholder="05XXXXXXXX"
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full p-3 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"

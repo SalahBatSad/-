@@ -34,6 +34,7 @@ export default function App() {
   });
   
   const [showCustomerAuth, setShowCustomerAuth] = useState(false);
+  const [authTab, setAuthTab] = useState('login'); // <-- متغير جديد لحفظ نوع التبويبة
   const [products, setProducts] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -179,8 +180,10 @@ export default function App() {
           onOpenCart={() => setIsCartOpen(true)}
           onOpenAdmin={() => isAdminAuthenticated ? setViewAdmin(true) : setShowLoginModal(true)}
           currentUser={currentUser}
-          onOpenCustomerAuth={() => setShowCustomerAuth(true)}
-          onLogout={handleLogoutCustomer}
+          onOpenCustomerAuth={(type = 'login') => {
+            setAuthTab(type); // حفظ القيمة المرسلة من الناف بار
+            setShowCustomerAuth(true); // فتح النافذة
+          }}
         />
 
         <Routes>
@@ -215,6 +218,7 @@ export default function App() {
           <CustomerAuthModal 
             onClose={() => setShowCustomerAuth(false)}
             onLoginSuccess={(user) => setCurrentUser(user)}
+            initialTab={authTab} // <-- تمرير نوع التبويبة للنافذة
           />
         )}
 
