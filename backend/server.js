@@ -37,22 +37,29 @@ app.use('/uploads', express.static(uploadDir));
 // 💡 مخزن مؤقت لأكواد التحقق المحلي
 const otpStore = {};
 
+// 🔌 الاتصال بقاعدة البيانات MySQL باستخدام الـ Connection Pool
 // 🔌 الاتصال بقاعدة البيانات MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // كلمة السر الافتراضية في XAMPP
-  database: 'perfume_store'
+const db = mysql.createPool({
+  host: process.env.DB_HOST || 'mysql-dealiopro.alwaysdata.net',
+  user: process.env.DB_USER || 'dealiopro',
+  password: process.env.DB_PASSWORD || 'Salah000@',
+  database: process.env.DB_NAME || 'dealiopro_salah',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect((err) => {
+// اختبار الاتصال بالـ Pool بطريقة صحيحة
+db.getConnection((err, connection) => {
   if (err) {
     console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err.message);
   } else {
     console.log('✅ تم الاتصال بقاعدة البيانات MySQL بنجاح!');
+    connection.release(); // تحرير الاتصال ليعود إلى الـ Pool
   }
 });
 
+module.exports = db; // تأكد من تصدير الاتصال إذا كان في ملف منفصل
 // 1️⃣ جلب جميع العطور
 app.get('/api/products', (req, res) => {
   db.query('SELECT * FROM products', (err, results) => {
