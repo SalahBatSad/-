@@ -31,7 +31,10 @@ useEffect(() => {
         setLoading(false);
       });
   }, []);
-
+// 👇 1. أضف هذا السطر هنا مباشرة قبل جملة return 👇
+  const bestSellerProducts = products
+    .filter(product => product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1')
+    .slice(0, 3); // تحديد العدد بـ 3 منتجات فقط
   return (
     <div>
       {/* القسم الرئيسي (Hero Section) */}
