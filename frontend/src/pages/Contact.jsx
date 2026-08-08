@@ -8,7 +8,7 @@ const Contact = () => {
     e.preventDefault();
     setStatus({ type: 'loading', message: 'جاري إرسال الرسالة...' });
 
-    fetch('http://localhost:5000/api/contact', {
+    fetch('https://otourna-backend.onrender.com/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)

@@ -70,7 +70,7 @@ export default function App() {
     setOtpError('');
     setIsSendingOtp(true);
 
-    fetch('http://localhost:5000/api/send-otp', {
+    fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: formData.phone })
@@ -90,7 +90,7 @@ export default function App() {
   // 4. دالة التأكد من الكود
   const handleVerifyOtp = () => {
     setOtpError('');
-    fetch('http://localhost:5000/api/verify-otp', {
+    fetch('/api/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: formData.phone, code: otpCode })
@@ -118,7 +118,7 @@ export default function App() {
 
     const fullAddress = `المحافظة: ${formData.governorate} | المدينة/البلد: ${formData.city} | الشارع: ${formData.street}`;
 
-    fetch('http://localhost:5000/api/orders', {
+    fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -139,7 +139,7 @@ export default function App() {
 
   // فصلنا الكود في دالة منفصلة لسهولة استدعائها
   const fetchAppProducts = () => {
-    fetch('http://localhost:5000/api/products')
+    fetch('/api/products')
       .then(res => res.json())
       .then(data => {
         const enriched = data.map((item, idx) => ({

@@ -36,7 +36,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
     // تجميع العنوان التفصيلي
     const fullAddress = `المحافظة: ${formData.governorate} | المدينة/البلد: ${formData.city} | الشارع: ${formData.street}`;
 
-    fetch('http://localhost:5000/api/orders', {
+    fetch('https://otourna-backend.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -48,7 +48,7 @@ export default function Checkout({ cartItems, onClearCart, currentUser }) {
     setOtpError('');
     setIsSendingOtp(true);
 
-    fetch('http://localhost:5000/api/send-otp', {
+    fetch('https://otourna-backend.onrender.com/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: formData.phone })
@@ -71,7 +71,7 @@ export default function Checkout({ cartItems, onClearCart, currentUser }) {
   const handleVerifyOtp = () => {
     setOtpError('');
 
-    fetch('http://localhost:5000/api/verify-otp', {
+    fetch('https://otourna-backend.onrender.com/api/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: formData.phone, code: otpCode })
@@ -100,7 +100,7 @@ export default function Checkout({ cartItems, onClearCart, currentUser }) {
 
     const fullAddress = `المحافظة: ${formData.governorate} | المدينة/البلد: ${formData.city} | الشارع: ${formData.street}`;
 
-    fetch('http://localhost:5000/api/orders', {
+    fetch('https://otourna-backend.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

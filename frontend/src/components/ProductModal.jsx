@@ -15,7 +15,7 @@ export default function ProductModal({ product, onClose, onAddToCart }) {
         <img 
             src={
                    product.image 
-                                 ? (product.image.startsWith('http') ? product.image : `http://localhost:5000${product.image}`)
+                                 ? (product.image.startsWith('http') ? product.image : `https://otourna-backend.onrender.com${product.image}`)
                                  : 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600'
                  } 
                             alt={product.name} 

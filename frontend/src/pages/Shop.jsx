@@ -14,7 +14,7 @@ export default function Shop({ onAddToCart, onQuickView }) {
   const categories = ['الكل', 'عطور نيش', 'عطور رجالية', 'عطور نسائية', 'العود والبخور'];
 
   useEffect(() => {
-  fetch('http://localhost:5000/api/products')
+  fetch('https://otourna-backend.onrender.com/api/products')
     .then(res => res.json())
     .then(data => {
       const enriched = data.map((item, idx) => ({

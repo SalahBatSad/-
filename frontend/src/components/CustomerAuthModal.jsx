@@ -58,7 +58,7 @@ export default function CustomerAuthModal({ onClose, onLoginSuccess, initialTab 
     const endpoint = isRegister ? '/api/register' : '/api/login';
     const payload = isRegister ? formData : { email: formData.email, password: formData.password };
 
-    fetch(`http://localhost:5000${endpoint}`, {
+    fetch(`https://otourna-backend.onrender.com${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -88,7 +88,7 @@ export default function CustomerAuthModal({ onClose, onLoginSuccess, initialTab 
       };
 
       // إرسال بيانات جوجل للسيرفر لحفظ الحساب أو تسجيل الدخول
-      fetch('http://localhost:5000/api/google-login', {
+      fetch('https://otourna-backend.onrender.com/api/google-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(googleUserData)

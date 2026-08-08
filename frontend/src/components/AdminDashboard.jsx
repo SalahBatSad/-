@@ -22,8 +22,8 @@ const [newProduct, setNewProduct] = useState({
   const fetchData = () => {
     setLoading(true);
     Promise.all([
-      fetch('http://localhost:5000/api/orders').then(res => res.json()),
-      fetch('http://localhost:5000/api/products').then(res => res.json())
+      fetch('https://otourna-backend.onrender.com/api/orders').then(res => res.json()),
+      fetch('https://otourna-backend.onrender.com/api/products').then(res => res.json())
     ])
     .then(([ordersData, productsData]) => {
       setOrders(Array.isArray(ordersData) ? ordersData : []);
@@ -53,8 +53,8 @@ const [newProduct, setNewProduct] = useState({
 
     // تحديد الرابط ونوع الطلب (POST للإضافة، PUT للتعديل)
     const url = editingId 
-      ? `http://localhost:5000/api/products/${editingId}` 
-      : 'http://localhost:5000/api/products';
+      ? `https://otourna-backend.onrender.com/api/products/${editingId}` 
+      : 'https://otourna-backend.onrender.com/api/products';
     const method = editingId ? 'PUT' : 'POST';
 
     try {
@@ -79,7 +79,7 @@ const [newProduct, setNewProduct] = useState({
   // حذف عطر
   const handleDeleteProduct = (id) => {
     if (window.confirm('هل أنت تأكد من حذف هذا العطر؟')) {
-      fetch(`http://localhost:5000/api/products/${id}`, { method: 'DELETE' })
+      fetch(`https://otourna-backend.onrender.com/api/products/${id}`, { method: 'DELETE' })
       .then(() => fetchData());
     }
   };
@@ -87,7 +87,7 @@ const [newProduct, setNewProduct] = useState({
   const handleToggleBestSeller = async (product) => {
     const updatedStatus = !product.is_best_seller;
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${product.id}/best-seller`, {
+      const response = await fetch(`https://otourna-backend.onrender.com/api/products/${product.id}/best-seller`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_best_seller: updatedStatus })
@@ -105,7 +105,7 @@ const [newProduct, setNewProduct] = useState({
 // 🌟 دالة تحديث حالة الطلب
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const response = await fetch(`https://otourna-backend.onrender.com/api/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })

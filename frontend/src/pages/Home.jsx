@@ -7,7 +7,7 @@ const Home = ({ setActivePage }) => {
 
   useEffect(() => {
     // جلب المنتجات من الواجهة الخلفية (Node.js API)
-    fetch('http://localhost:5000/api/products')
+    fetch('https://otourna-backend.onrender.com/api/products')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
