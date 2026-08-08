@@ -4,19 +4,30 @@ import ProductCard from '../components/ProductCard';
 const Home = ({ setActivePage }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+useEffect(() => {
     // جلب المنتجات من الواجهة الخلفية (Node.js API)
     fetch('https://otourna-backend.onrender.com/api/products')
-      .then((res) => res.json())
+      .then((res) => {
+        // التحقق من أن الخادم أرجع JSON وليس صفحة خطأ HTML
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        } else {
+          throw new Error("الخادم لم يرجع بيانات صالحة (قد يكون هناك خطأ في اتصال قاعدة البيانات على Render)");
+        }
+      })
       .then((data) => {
-        if (data.success) {
+        // الخادم يرسل مصفوفة مباشرة حسب ملف server.txt
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (data && data.success) {
+          // كإجراء احتياطي إذا قمت بتغيير الخادم لاحقاً
           setProducts(data.data);
         }
         setLoading(false);
       })
       .catch((err) => {
-        console.error('خطأ في جلب البيانات:', err);
+        console.error('❌ خطأ في جلب البيانات:', err);
         setLoading(false);
       });
   }, []);
