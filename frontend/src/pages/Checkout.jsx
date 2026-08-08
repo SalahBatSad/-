@@ -192,7 +192,7 @@ export default function Checkout({ cartItems, onClearCart, currentUser }) {
             <div className="flex gap-2">
               <input 
                 type="tel" 
-                placeholder="059XXXXXXX" 
+                placeholder="05XXXXXXXX" 
                 disabled={isPhoneVerified}
                 required 
                 value={formData.phone}

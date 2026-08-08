@@ -153,10 +153,10 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
 
                   {/* 2. رقم الهاتف */}
                   <div>
-                    <label className="block text-[11px] text-gray-400 mb-1">رقم الهاتف (10 أرقام تبدأ بـ 05)</label>
+                    <label className="block text-[11px] text-gray-400 mb-1">رقم الهاتف </label>
                     <input 
                       type="tel" 
-                      placeholder="059XXXXXXX" 
+                      placeholder="05XXXXXXXX" 
                       required
                       value={formData.phone}
                       onChange={(e) => {
