@@ -6,14 +6,14 @@ export default function Navbar({ cartCount, onOpenCart, onOpenAdmin, currentUser
     <header className="sticky top-0 z-40 w-full">
       <div className="bg-gradient-to-r from-[#111115] via-[#1A1812] to-[#111115] border-b border-[#D4AF37]/20 text-[#D4AF37] text-xs py-2 overflow-hidden shadow-inner">
         <div className="animate-marquee font-medium tracking-wide text-center">
-          ✨ عروض حصرية: شحن مجاني للطلبات فوق 300 شيكل &nbsp;&nbsp; | &nbsp;&nbsp; 🎁 عينة مجانية مع كل طلب
+          🎁 عروض حصرية: علبة عطر مجانية للطلبات فوق 500 شيكل 🎁&nbsp;&nbsp; | &nbsp;&nbsp;  عينة مجانية مع كل طلب
         </div>
       </div>
 
       <nav className="glass-dark px-6 py-4 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          <Link to="/" onDoubleClick={onOpenAdmin} className="flex items-center group">
+          <Link to="/" className="flex items-center group">
         <div>
            <h1 className="text-3xl md:text-4xl font-black tracking-widest text-gold-gradient transition-transform duration-300 group-hover:scale-105">عُطُورْنَا</h1>
            <span className="text-[10px] tracking-[0.25em] text-gray-400 block mt-1 uppercase font-semibold">Luxury Perfumes</span>

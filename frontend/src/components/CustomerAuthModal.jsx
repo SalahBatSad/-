@@ -117,9 +117,10 @@ export default function CustomerAuthModal({ onClose, onLoginSuccess, initialTab 
       <div className="glass-dark border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 max-w-lg w-full text-white shadow-[0_0_50px_rgba(212,175,55,0.15)] relative max-h-[90vh] overflow-y-auto">
         
         {/* زر الإغلاق */}
+        {/* زر الإغلاق الثابت والمطور */}
         <button 
           onClick={onClose}
-          className="absolute top-4 left-4 text-gray-400 hover:text-white text-xl p-1"
+          className="sticky top-0 z-50 float-left -mt-2 -ml-2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white text-lg bg-[#0A0A0C]/90 border border-gray-800 hover:border-[#D4AF37] rounded-full backdrop-blur-md shadow-lg transition-all"
         >
           ✕
         </button>

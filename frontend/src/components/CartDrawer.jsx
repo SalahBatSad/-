@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onClearCart }) {
+export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onClearCart, currentUser, onOpenCustomerAuth }) {
   // بيانات النموذج (الاسم، الهاتف، والخانات الثلاث للعنوان)
   const [formData, setFormData] = useState({ 
     customer_name: '', 
@@ -26,7 +26,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
     // التثبت من صيغة رقم الهاتف (10 أرقام ويبدأ بـ 05)
     const phoneRegex = /^05\d{8}$/;
     if (!phoneRegex.test(formData.phone)) {
-      setPhoneError('⚠️ يجب أن يتكون رقم الهاتف من 10 أرقام ويبدأ بـ 05 (مثال: 059XXXXXXX)');
+      setPhoneError('⚠️ يجب أن يتكون رقم الهاتف من 10 أرقام ويبدأ بـ 05 (مثال: 05XXXXXXXX)');
       return;
     }
     setPhoneError('');
@@ -122,89 +122,103 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                 <span className="text-gold-gradient">{totalAmount} ₪</span>
               </div>
 
-              {/* فورم إدخال البيانات */}
-              <form onSubmit={handleSubmitOrder} className="space-y-3 text-right">
-                
-                {/* 1. الاسم */}
-                <div>
-                  <label className="block text-[11px] text-gray-400 mb-1">الاسم الكامل</label>
-                  <input 
-                    type="text" 
-                    placeholder="أدخل اسمك الرباعي" 
-                    required
-                    value={formData.customer_name}
-                    onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
-                  />
+              {/* التحقق من حالة تسجيل الدخول */}
+              {!currentUser ? (
+                <div className="text-center py-6 space-y-4 border-t border-gray-800 mt-4">
+                  <div className="text-4xl">🔒</div>
+                  <p className="text-sm text-gray-300">يجب تسجيل الدخول لإتمام عملية الشراء وتأكيد طلبك.</p>
+                  <button 
+                    onClick={() => onOpenCustomerAuth('register')}
+                    className="w-full py-3.5 bg-gradient-to-r from-[#D4AF37] to-[#AA771C] text-black font-extrabold rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer"
+                  >
+                    تسجيل الدخول / إنشاء حساب 👤
+                  </button>
                 </div>
-
-                {/* 2. رقم الهاتف */}
-                <div>
-                  <label className="block text-[11px] text-gray-400 mb-1">رقم الهاتف (10 أرقام تبدأ بـ 05)</label>
-                  <input 
-                    type="tel" 
-                    placeholder="059XXXXXXX" 
-                    required
-                    value={formData.phone}
-                    onChange={(e) => {
-                      setFormData({ ...formData, phone: e.target.value });
-                      if (phoneError) setPhoneError('');
-                    }}
-                    className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
-                  />
-                  {phoneError && <p className="text-[11px] text-red-400 mt-1">{phoneError}</p>}
-                </div>
-
-                {/* 3. تفاصيل العنوان - 3 خانات */}
-                <div className="space-y-2 pt-2 border-t border-gray-800">
-                  <span className="block text-xs font-bold text-[#D4AF37]">عنوان التوصيل التفصيلي:</span>
-
+              ) : (
+                /* فورم إدخال البيانات يظهر فقط للمسجلين */
+                <form onSubmit={handleSubmitOrder} className="space-y-3 text-right">
+                  
+                  {/* 1. الاسم */}
                   <div>
-                    <label className="block text-[10px] text-gray-400 mb-0.5">1. المحافظة</label>
+                    <label className="block text-[11px] text-gray-400 mb-1">الاسم الكامل</label>
                     <input 
                       type="text" 
-                      placeholder="مثال: نابلس، رام الله، الخليل..." 
+                      placeholder="أدخل اسمك الرباعي" 
                       required
-                      value={formData.governorate}
-                      onChange={(e) => setFormData({ ...formData, governorate: e.target.value })}
+                      value={formData.customer_name}
+                      onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
                       className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
                     />
                   </div>
 
+                  {/* 2. رقم الهاتف */}
                   <div>
-                    <label className="block text-[10px] text-gray-400 mb-0.5">2. البلد / المدينة / القرية</label>
+                    <label className="block text-[11px] text-gray-400 mb-1">رقم الهاتف (10 أرقام تبدأ بـ 05)</label>
                     <input 
-                      type="text" 
-                      placeholder="مثال: مدينة نابلس / قرية حوارة..." 
+                      type="tel" 
+                      placeholder="059XXXXXXX" 
                       required
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      value={formData.phone}
+                      onChange={(e) => {
+                        setFormData({ ...formData, phone: e.target.value });
+                        if (phoneError) setPhoneError('');
+                      }}
                       className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
                     />
+                    {phoneError && <p className="text-[11px] text-red-400 mt-1">{phoneError}</p>}
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] text-gray-400 mb-0.5">3. الشارع أو بالقرب من (معلم معروف)</label>
-                    <input 
-                      type="text" 
-                      placeholder="مثال: شارع رفيديا - بالقرب من المستشفى" 
-                      required
-                      value={formData.street}
-                      onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                      className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
-                    />
-                  </div>
-                </div>
+                  {/* 3. تفاصيل العنوان - 3 خانات */}
+                  <div className="space-y-2 pt-2 border-t border-gray-800">
+                    <span className="block text-xs font-bold text-[#D4AF37]">عنوان التوصيل التفصيلي:</span>
 
-                {/* زر الشراء المباشر */}
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full py-3.5 bg-gradient-to-r from-[#D4AF37] to-[#AA771C] text-black font-extrabold rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer mt-2"
-                >
-                  {isSubmitting ? 'جاري إرسال الطلب...' : 'تأكيد وشراء الطلب الآن 🛍️'}
-                </button>
-              </form>
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-0.5">1. المحافظة</label>
+                      <input 
+                        type="text" 
+                        placeholder="مثال: نابلس، رام الله، الخليل..." 
+                        required
+                        value={formData.governorate}
+                        onChange={(e) => setFormData({ ...formData, governorate: e.target.value })}
+                        className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-0.5">2. البلد / المدينة / القرية</label>
+                      <input 
+                        type="text" 
+                        placeholder="مثال: مدينة نابلس / قرية حوارة..." 
+                        required
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-0.5">3. الشارع أو بالقرب من (معلم معروف)</label>
+                      <input 
+                        type="text" 
+                        placeholder="مثال: شارع رفيديا - بالقرب من المستشفى" 
+                        required
+                        value={formData.street}
+                        onChange={(e) => setFormData({ ...formData, street: e.target.value })}
+                        className="w-full px-3 py-2 bg-[#0A0A0C] border border-gray-800 rounded-xl text-xs text-white focus:border-[#D4AF37] outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* زر الشراء المباشر */}
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 bg-gradient-to-r from-[#D4AF37] to-[#AA771C] text-black font-extrabold rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer mt-2"
+                  >
+                    {isSubmitting ? 'جاري إرسال الطلب...' : 'تأكيد وشراء الطلب الآن 🛍️'}
+                  </button>
+                </form>
+              )}
             </div>
           )}
 

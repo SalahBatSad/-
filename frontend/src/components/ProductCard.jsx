@@ -12,12 +12,15 @@ export default function ProductCard({ product, onQuickView, onAddToCart }) {
       {/* صورة العطر مع التكبير عند الماوس */}
       <div className="relative h-72 overflow-hidden bg-black/40">
         <img 
-          src={product.image || 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600'} 
+          src={
+            product.image 
+              ? (product.image.startsWith('http') ? product.image : `http://localhost:5000${product.image}`)
+              : 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600'
+          } 
           alt={product.name} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#121216] via-transparent to-transparent opacity-80"></div>
-        
         {/* زر العرض السريع */}
         <button 
           onClick={() => onQuickView(product)}
@@ -29,9 +32,17 @@ export default function ProductCard({ product, onQuickView, onAddToCart }) {
 
       {/* تفاصيل المنتج */}
       <div className="p-5 space-y-3">
-        <h3 className="text-lg font-bold text-white group-hover:text-[#D4AF37] transition-colors">{product.name}</h3>
+        <div className="flex justify-between items-start gap-2">
+          <h3 className="text-lg font-bold text-white group-hover:text-[#D4AF37] transition-colors">{product.name}</h3>
+          
+          {/* شارة الأكثر مبيعاً في واجهة المتجر */}
+          {(product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1') && (
+            <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] px-2 py-1 rounded-full border border-[#D4AF37]/40 whitespace-nowrap">
+              الأكثر مبيعاً 🌟
+            </span>
+          )}
+        </div>
         <p className="text-gray-400 text-xs line-clamp-2 font-light">{product.description}</p>
-        
         <div className="flex items-center justify-between pt-3 border-t border-gray-800/80">
           <span className="text-xl font-extrabold text-gold-gradient">{product.price} <span className="text-xs font-normal text-gray-400">₪</span></span>
           

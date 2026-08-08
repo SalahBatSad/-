@@ -11,11 +11,16 @@ export default function ProductModal({ product, onClose, onAddToCart }) {
         <button onClick={onClose} className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-black/60 text-gray-400 hover:text-white flex items-center justify-center border border-gray-700">
           ✕
         </button>
-
-        {/* صورة المنتج */}
-        <div className="h-64 md:h-full relative overflow-hidden">
-          <img src={product.image || 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600'} alt={product.name} className="w-full h-full object-cover" />
-        </div>
+{/* صورة المنتج */}
+        <img 
+            src={
+                   product.image 
+                                 ? (product.image.startsWith('http') ? product.image : `http://localhost:5000${product.image}`)
+                                 : 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600'
+                 } 
+                            alt={product.name} 
+                       className="w-full h-full object-cover rounded-2xl shadow-2xl" 
+/>
 
         {/* تفاصيل العطر في النافذة المنبثقة */}
         <div className="p-6 md:p-8 flex flex-col justify-between space-y-4">

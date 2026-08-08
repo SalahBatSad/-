@@ -10,7 +10,7 @@ export default function AdminLogin({ onLoginSuccess, onCancel }) {
     
     // 🔐 بيانات الدخول الافتراضية للوحة التحكم
     // يمكنك تغيير "admin" و "123456" لأي شيء تريده
-    if (username === 'admin' && password === '123456') {
+    if (username === 'admin' && password === '71677741020066') {
       setError('');
       onLoginSuccess();
     } else {
@@ -52,7 +52,7 @@ export default function AdminLogin({ onLoginSuccess, onCancel }) {
             <label className="block text-xs text-gray-300 font-bold mb-1.5">اسم المستخدم</label>
             <input 
               type="text" 
-              placeholder="مثال: admin"
+              placeholder=""
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}

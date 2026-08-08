@@ -32,7 +32,7 @@ export default function App() {
     const saved = localStorage.getItem('customer_user');
     return saved ? JSON.parse(saved) : null;
   });
-  
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [showCustomerAuth, setShowCustomerAuth] = useState(false);
   const [authTab, setAuthTab] = useState('login'); // <-- متغير جديد لحفظ نوع التبويبة
   const [products, setProducts] = useState([]);
@@ -137,7 +137,8 @@ export default function App() {
   };
   // ==========================================
 
-  useEffect(() => {
+  // فصلنا الكود في دالة منفصلة لسهولة استدعائها
+  const fetchAppProducts = () => {
     fetch('http://localhost:5000/api/products')
       .then(res => res.json())
       .then(data => {
@@ -149,6 +150,11 @@ export default function App() {
         setProducts(enriched);
       })
       .catch(err => console.error(err));
+  };
+
+  // تشغيل الدالة عند تحميل الصفحة لأول مرة
+  useEffect(() => {
+    fetchAppProducts();
   }, []);
 
   const handleAddToCart = (product) => {
@@ -167,8 +173,15 @@ export default function App() {
     setCurrentUser(null);
   };
 
-  if (viewAdmin && isAdminAuthenticated) {
-    return <AdminDashboard onBackToStore={() => setViewAdmin(false)} />;
+ if (viewAdmin && isAdminAuthenticated) {
+    return (
+      <AdminDashboard 
+        onBackToStore={() => {
+          fetchAppProducts(); // جلب المنتجات المحدثة
+          setViewAdmin(false); // العودة للمتجر
+        }} 
+      />
+    );
   }
 
   return (
@@ -188,23 +201,31 @@ export default function App() {
 
         <Routes>
           <Route path="/" element={
-            <>
-              <Hero />
-              <main className="max-w-7xl mx-auto px-6 py-20">
+  <>
+    <Hero 
+      onOpenCustomerAuth={(type = 'login') => {
+        setAuthTab(type);
+        setShowCustomerAuth(true);
+      }} 
+    />
+    <main className="max-w-7xl mx-auto px-6 py-20">
                 <div className="text-center space-y-3 mb-16">
                   <span className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest">تشكيلة العطور الملكية</span>
                   <h2 className="text-3xl md:text-5xl font-black text-white">الأكثر مبيعاً ورواجاً</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {products.map(product => (
-                    <ProductCard 
-                      key={product.id} 
-                      product={product} 
-                      onQuickView={(p) => setSelectedProduct(p)}
-                      onAddToCart={handleAddToCart}
-                    />
-                  ))}
-                </div>
+  {products
+    .filter(product => product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1')
+    .slice(0, 3)
+    .map(product => (
+      <ProductCard 
+        key={product.id} 
+        product={product} 
+        onQuickView={(p) => setSelectedProduct(p)}
+        onAddToCart={handleAddToCart}
+      />
+    ))}
+</div>
               </main>
             </>
           } />
@@ -212,6 +233,18 @@ export default function App() {
           <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onQuickView={(p) => setSelectedProduct(p)} />} />
           <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
           <Route path="/checkout" element={<Checkout cartItems={cartItems} onClearCart={() => setCartItems([])} currentUser={currentUser} />} />
+        {/* 🔒 المسار السري الخاص بك كأدمن فقط */}
+  {/* 🔒 المسار السري الخاص بك كأدمن فقط */}
+<Route 
+  path="/admin-s" 
+  element={
+    isAdminLoggedIn ? (
+      <AdminDashboard onBackToStore={() => window.location.href = '/'} />
+    ) : (
+      <AdminLogin onLoginSuccess={() => setIsAdminLoggedIn(true)} />
+    )
+  } 
+/>
         </Routes>
 
         {showCustomerAuth && (
@@ -246,6 +279,14 @@ export default function App() {
           onUpdateQuantity={(id, delta) => setCartItems(prev => prev.map(item => item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item))}
           onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
           onClearCart={() => setCartItems([])}
+          
+          // 👇 الأسطر الجديدة التي تم إضافتها 👇
+          currentUser={currentUser}
+          onOpenCustomerAuth={(type = 'register') => {
+            setIsCartOpen(false); // 1. إغلاق السلة أولاً
+            setAuthTab(type);     // 2. تعيين نوع النافذة (register)
+            setShowCustomerAuth(true); // 3. إظهار نافذة الدخول/التسجيل المنبثقة
+          }}
         />
 
         <footer className="border-t border-gray-900 bg-[#070709] py-10 text-center text-xs text-gray-500">

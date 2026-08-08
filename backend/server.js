@@ -1,11 +1,39 @@
 const express = require('express');
-const mysql = require('mysql2');
 const cors = require('cors');
+const mysql = require('mysql2'); // أو حسب المكتبة التي تستخدمها لقاعدة البيانات
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs'); // 🌟 مكتبة التعامل مع الملفات
 
+// 1️⃣ تعريف المتغير app أولاً (مهم جداً أن يكون هنا قبل استخدامه)
 const app = express();
+
+// 2️⃣ إعدادات app الأساسية
 app.use(cors());
 app.use(express.json());
 
+// 3️⃣ إنشاء مجلد uploads تلقائياً إذا لم يكن موجوداً
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// 4️⃣ إعداد مكان واسم الصورة المرفوعة
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// 5️⃣ السماح للواجهة بقراءة الصور (الآن سيعمل لأن app معرف مسبقاً فوق!)
+app.use('/uploads', express.static(uploadDir));
+
+// ... باقي الكود والمسارات (Routes) تبقى كما هي في الأسفل ...
 // 💡 مخزن مؤقت لأكواد التحقق المحلي
 const otpStore = {};
 
@@ -33,17 +61,88 @@ app.get('/api/products', (req, res) => {
   });
 });
 
-// 2️⃣ إضافة عطر جديد (لوحة الأدمن)
-app.post('/api/products', (req, res) => {
-  const { name, price, description } = req.body;
-  db.query(
-    'INSERT INTO products (name, price, description) VALUES (?, ?, ?)',
-    [name, price, description],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'تمت إضافة العطر بنجاح', id: result.insertId });
+// 2️⃣ إضافة عطر جديد مع التصنيف والصورة والأكثر مبيعاً (لوحة الأدمن)
+app.post('/api/products', upload.single('image'), (req, res) => {
+  const { name, description, price, category } = req.body;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const sql = "INSERT INTO products (name, description, price, category, image) VALUES (?, ?, ?, ?, ?)";
+  
+  db.query(sql, [name, description, price, category, imageUrl], (err, result) => {
+    if (err) {
+      console.error("خطأ في الإضافة:", err);
+      return res.status(500).json({ error: "حدث خطأ أثناء إضافة المنتج" });
     }
-  );
+    res.json({ message: "تمت إضافة المنتج بنجاح!", id: result.insertId });
+  });
+});
+
+// 🌟 الكود القديم (اتركه كما هو) - مسار تعديل منتج
+app.put('/api/products/:id', upload.single('image'), (req, res) => {
+  const { id } = req.params;
+  const { name, description, price, category } = req.body;
+  
+  // إذا لم يرفع صورة جديدة، نحدث فقط النصوص
+  let sql = "UPDATE products SET name=?, description=?, price=?, category=? WHERE id=?";
+  let values = [name, description, price, category, id];
+
+  // إذا قام برفع صورة جديدة، نحدث مسار الصورة أيضاً
+  if (req.file) {
+    const imageUrl = `/uploads/${req.file.filename}`;
+    sql = "UPDATE products SET name=?, description=?, price=?, category=?, image=? WHERE id=?";
+    values = [name, description, price, category, imageUrl, id];
+  }
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("خطأ في التعديل:", err);
+      return res.status(500).json({ error: "حدث خطأ أثناء تعديل المنتج" });
+    }
+    res.json({ message: "تم التعديل بنجاح!" });
+  });
+});
+
+
+// 👇👇👇 أضف هذا الكود الجديد هنا مباشرة 👇👇👇
+
+// 🌟 مسار جديد: تحديث حالة "الأكثر مبيعاً" للمنتج فقط
+app.put('/api/products/:id/best-seller', (req, res) => {
+  const productId = req.params.id;
+  const { is_best_seller } = req.body;
+
+  // تحويل القيمة المنطقية إلى 1 (نعم) أو 0 (لا) لتناسب قاعدة البيانات
+  const bestSellerValue = is_best_seller ? 1 : 0;
+
+  const sql = 'UPDATE products SET is_best_seller = ? WHERE id = ?';
+  
+  db.query(sql, [bestSellerValue, productId], (err, result) => {
+    if (err) {
+      console.error('خطأ في تحديث حالة الأكثر مبيعاً:', err);
+      return res.status(500).json({ error: 'حدث خطأ في السيرفر' });
+    }
+    res.json({ message: 'تم تحديث حالة الأكثر مبيعاً بنجاح!' });
+  });
+});
+// 🌟 مسار تحديث حالة الطلب
+app.put('/api/orders/:id/status', (req, res) => {
+  const orderId = req.params.id;
+  const newStatus = req.body.status;
+
+  // استعلام تحديث الحالة في قاعدة البيانات
+  const sql = "UPDATE orders SET status = ? WHERE id = ?";
+  
+  db.query(sql, [newStatus, orderId], (err, result) => {
+    if (err) {
+      console.error("خطأ في تحديث قاعدة البيانات:", err);
+      return res.status(500).json({ error: "حدث خطأ في الخادم" });
+    }
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "الطلب غير موجود" });
+    }
+
+    res.json({ message: "تم تحديث الحالة بنجاح" });
+  });
 });
 
 // 3️⃣ حذف عطر (لوحة الأدمن)

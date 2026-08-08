@@ -14,19 +14,23 @@ export default function Shop({ onAddToCart, onQuickView }) {
   const categories = ['الكل', 'عطور نيش', 'عطور رجالية', 'عطور نسائية', 'العود والبخور'];
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
-      .then(res => res.json())
-      .then(data => {
-        const enriched = data.map((item, idx) => ({
-          ...item,
-          price: Number(item.price),
-          image: item.image || defaultImages[idx % defaultImages.length]
-        }));
-        setProducts(enriched);
-      })
-      .catch(err => console.error(err));
-  }, []);
-
+  fetch('http://localhost:5000/api/products')
+    .then(res => res.json())
+    .then(data => {
+      const enriched = data.map((item, idx) => ({
+        ...item,
+        price: Number(item.price),
+        category: item.category || 'عطور نيش',
+        image: item.image && item.image.trim() !== '' ? item.image : defaultImages[idx % defaultImages.length]
+      }));
+      setProducts(enriched);
+    })
+    .catch(err => console.error(err));
+}, []);
+// تصفية العطور بناءً على التصنيف المحدد من المستخدم
+const filteredProducts = selectedCategory === 'الكل'
+  ? products
+  : products.filter(product => product.category === selectedCategory);
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 text-white">
       <div className="text-center space-y-3 mb-10">
@@ -49,14 +53,15 @@ export default function Shop({ onAddToCart, onQuickView }) {
 
       {/* شبكة المنتجات */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map(product => (
-          <ProductCard 
-            key={product.id} 
-            product={product} 
-            onQuickView={onQuickView}
-            onAddToCart={onAddToCart}
-          />
-        ))}
+        {/* الكود الجديد بعد الفلترة */}
+{filteredProducts.map(product => (
+  <ProductCard 
+    key={product.id} 
+    product={product} 
+    onQuickView={onQuickView}
+    onAddToCart={onAddToCart}
+  />
+))}
       </div>
     </div>
   );

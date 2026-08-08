@@ -144,14 +144,28 @@ export default function Checkout({ cartItems, onClearCart, currentUser }) {
         <div className="bg-[#16161E] p-6 rounded-2xl border border-gray-800 space-y-4 h-fit">
           <h3 className="font-bold text-lg border-b border-gray-800 pb-2">ملخص العطور</h3>
           {cartItems.map(item => (
-            <div key={item.id} className="flex justify-between text-xs py-2 border-b border-gray-800/50">
-              <span>{item.name} (x{item.quantity})</span>
+            <div key={item.id} className="flex justify-between items-center text-xs py-2 border-b border-gray-800/50">
+              <div className="flex items-center gap-2">
+                <span>{item.name} (x{item.quantity})</span>
+                {/* 🌟 الكود الخاص بعرض شارة الأكثر مبيعاً 🌟 */}
+{(item.is_best_seller == 1 || item.is_best_seller === true || item.is_best_seller === '1') && (                  <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] px-2 py-0.5 rounded-full border border-[#D4AF37]/40">
+                    الأكثر مبيعاً 🌟
+                  </span>
+                )}
+              </div>
               <span className="font-bold text-[#D4AF37]">{item.price * item.quantity} ₪</span>
             </div>
           ))}
-          <div className="flex justify-between text-base font-black pt-2">
-            <span>المجموع الإجمالي:</span>
-            <span className="text-[#D4AF37]">{total} ₪</span>
+          
+          <div className="space-y-2 pt-2">
+            <div className="flex justify-between text-xs font-bold text-gray-300">
+              <span>رسوم التوصيل:</span>
+              <span className="text-green-400">مجاني 🚚</span>
+            </div>
+            <div className="flex justify-between text-base font-black pt-2 border-t border-gray-800/50">
+              <span>المجموع الإجمالي:</span>
+              <span className="text-[#D4AF37]">{total} ₪</span>
+            </div>
           </div>
         </div>
 
