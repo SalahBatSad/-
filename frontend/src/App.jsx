@@ -26,7 +26,11 @@ export default function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [viewAdmin, setViewAdmin] = useState(false);
+// التأكد من جلب الرابط من متغيرات البيئة
+const API_URL = import.meta.env.VITE_API_URL || "";
 
+// دمج الرابط الأساسي مع مسار المنتجات
+const response = await fetch(`${API_URL}/api/products`);
   // حساب الزبون
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('customer_user');
