@@ -87,7 +87,7 @@ const [newProduct, setNewProduct] = useState({
   const handleToggleBestSeller = async (product) => {
     const updatedStatus = !product.is_best_seller;
     try {
-      const response = await fetch(`https://otourna-backend.onrender.com/api/products/${product.id}/best-seller`, {
+      const response = await fetch(`https://otourna-backend.onrender.com/api/products/${product.id}/is_best_seller`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_best_seller: updatedStatus })
