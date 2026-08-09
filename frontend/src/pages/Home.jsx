@@ -74,7 +74,7 @@ useEffect(() => {
           <div className="text-center py-12 text-amber-600 font-bold">جاري تحميل تشكيلة العطور...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {bestSellerProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

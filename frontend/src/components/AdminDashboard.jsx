@@ -85,8 +85,11 @@ const [newProduct, setNewProduct] = useState({
   };
   // 🌟 دالة تبديل حالة "الأكثر مبيعاً" للمنتج
   const handleToggleBestSeller = async (product) => {
-    const updatedStatus = !product.is_best_seller;
+    // التحقق من القيمة سواء كانت نصاً أو رقماً أو قيمة منطقية
+    const isCurrentlyBestSeller = product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1';
+    const updatedStatus = !isCurrentlyBestSeller;
     try {
+// ... باقي الكود
       const response = await fetch(`https://otourna-backend.onrender.com/api/products/${product.id}/best-seller`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
