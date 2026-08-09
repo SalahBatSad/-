@@ -154,30 +154,8 @@ export default function App() {
 
   // تشغيل الدالة عند تحميل الصفحة لأول مرة
   useEffect(() => {
-  const fetchAppProducts = async () => {
-    try {
-      // الاعتماد على المتغير، وإذا لم يوجد نضع الرابط الكامل مع https://
-      const API_URL = import.meta.env.VITE_API_URL || "https://dealiopro.alwaysdata.net";
-      
-      const response = await fetch(`${API_URL}/api/products`);
-      
-      // فحص الاستجابة كما اقترحت الصورة لتجنب الأخطاء
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      // setProducts(data); // هنا تضع دالة الحفظ الخاصة بك
-      
-    } catch (error) {
-      console.error("حدث خطأ أثناء جلب البيانات:", error);
-    }
-  };
-
-  fetchAppProducts();
-}, []);
-
-
+    fetchAppProducts();
+  }, []);
 
   const handleAddToCart = (product) => {
     setCartItems(prev => {
