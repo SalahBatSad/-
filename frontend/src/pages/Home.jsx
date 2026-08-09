@@ -4,6 +4,14 @@ import ProductCard from '../components/ProductCard';
 const Home = ({ setActivePage }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_URL = process.env.VITE_API_URL || '';
+
+useEffect(() => {
+  fetch(`${API_URL}/api/products`)
+    .then(res => res.json())
+    .then(data => setProducts(data))
+    .catch(err => console.error(err));
+}, []);
 useEffect(() => {
     // جلب المنتجات من الواجهة الخلفية (Node.js API)
     fetch('https://otourna-backend.onrender.com/api/products')

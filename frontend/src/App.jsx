@@ -156,7 +156,14 @@ export default function App() {
   useEffect(() => {
     fetchAppProducts();
   }, []);
+const API_URL = process.env.VITE_API_URL || '';
 
+useEffect(() => {
+  fetch(`${API_URL}/api/products`)
+    .then(res => res.json())
+    .then(data => setProducts(data))
+    .catch(err => console.error(err));
+}, []);
   const handleAddToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
