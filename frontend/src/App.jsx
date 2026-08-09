@@ -154,29 +154,28 @@ export default function App() {
 
   // تشغيل الدالة عند تحميل الصفحة لأول مرة
   useEffect(() => {
-    fetchAppProducts();
-  }, []);
-useEffect(() => {
-  // 1. إنشاء دالة تحمل كلمة async
-  const getProducts = async () => {
+  const fetchAppProducts = async () => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      // الاعتماد على المتغير، وإذا لم يوجد نضع الرابط الكامل مع https://
+      const API_URL = import.meta.env.VITE_API_URL || "https://dealiopro.alwaysdata.net";
       
-      // دمج الرابط الأساسي للباك اند مع مسار للمنتجات
       const response = await fetch(`${API_URL}/api/products`);
-      const data = await response.json();
       
-      // هنا تضع دالة تخزين البيانات في الـ State، مثلاً:
-      // setProducts(data);
-
+      // فحص الاستجابة كما اقترحت الصورة لتجنب الأخطاء
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      // setProducts(data); // هنا تضع دالة الحفظ الخاصة بك
+      
     } catch (error) {
       console.error("حدث خطأ أثناء جلب البيانات:", error);
     }
   };
 
-  // 2. استدعاء الدالة لتعمل
-  getProducts();
-}, []); // الأقواس الفارغة تعني أن الكود سيعمل مرة واحدة عند فتح الصفحة
+  fetchAppProducts();
+}, []);
 
 
 
