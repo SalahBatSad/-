@@ -137,20 +137,6 @@ export default function App() {
   };
   // ==========================================
 
-  // فصلنا الكود في دالة منفصلة لسهولة استدعائها
-  const fetchAppProducts = () => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        const enriched = data.map((item, idx) => ({
-          ...item,
-          price: Number(item.price),
-          image: item.image || defaultImages[idx % defaultImages.length]
-        }));
-        setProducts(enriched);
-      })
-      .catch(err => console.error(err));
-  };
 const fetchAppProducts = () => {
   fetch('https://otourna-backend.onrender.com/api/products')
     .then(res => res.json())
