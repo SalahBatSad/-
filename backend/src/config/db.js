@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 require('dotenv').config({ path: '../../.env' }); // جلب متغيرات البيئة
-
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 // إنشاء Pool للاتصال بقاعدة البيانات لدعم الطلبات المتزامنة
 const pool = mysql.createPool({
     host: process.env.DB_HOST,

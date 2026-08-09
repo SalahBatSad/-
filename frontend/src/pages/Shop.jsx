@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
+import { API_BASE_URL } from '../config';
 
+fetch(`${API_BASE_URL}/api/products`)
 const defaultImages = [
   'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600',
   'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600',
