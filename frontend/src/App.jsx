@@ -215,7 +215,7 @@ export default function App() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
   {products
-    //.filter(product => product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1')
+    .filter(product => product.is_best_seller == 1 || product.is_best_seller === true || product.is_best_seller === '1')
     .slice(0, 3)
     .map(product => (
       <ProductCard 
