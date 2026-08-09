@@ -137,25 +137,26 @@ export default function App() {
   };
   // ==========================================
 
-const fetchAppProducts = () => {
-  fetch('https://otourna-backend.onrender.com/api/products')
-    .then(res => res.json())
-    .then(data => {
-      // 🌟 تجميع وتمرير معالجة المنتجات هنا مرة واحدة لكل التطبيق
-      const enriched = data.map((item, idx) => ({
-        ...item,
-        price: Number(item.price),
-        category: item.category || 'عطور نيش',
-        image: item.image && item.image.trim() !== '' 
-          ? item.image 
-          : defaultImages[idx % defaultImages.length]
-      }));
+  // فصلنا الكود في دالة منفصلة لسهولة استدعائها
+  const fetchAppProducts = () => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        const enriched = data.map((item, idx) => ({
+          ...item,
+          price: Number(item.price),
+          image: item.image || defaultImages[idx % defaultImages.length]
+        }));
+        setProducts(enriched);
+      })
+      .catch(err => console.error(err));
+  };
 
-      // حفظ المنتجات المعالجة في الـ State
-      setProducts(enriched);
-    })
-    .catch(err => console.error("Error fetching products:", err));
-};
+  // تشغيل الدالة عند تحميل الصفحة لأول مرة
+  useEffect(() => {
+    fetchAppProducts();
+  }, []);
+
   const handleAddToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -229,7 +230,7 @@ const fetchAppProducts = () => {
             </>
           } />
 
-          <Route path="/shop" element={<Shop products={products} onAddToCart={handleAddToCart} onQuickView={(p) => setSelectedProduct(p)} />} />
+          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onQuickView={(p) => setSelectedProduct(p)} />} />
           <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
           <Route path="/checkout" element={<Checkout cartItems={cartItems} onClearCart={() => setCartItems([])} currentUser={currentUser} />} />
         {/* 🔒 المسار السري الخاص بك كأدمن فقط */}
