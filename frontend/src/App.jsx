@@ -26,12 +26,7 @@ export default function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [viewAdmin, setViewAdmin] = useState(false);
-// جلب الرابط من متغيرات البيئة، وإذا لم يجده (كمرحلة تطوير) يستخدم رابط اللوكال هوست
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// دمج الرابط الأساسي للباك اند مع مسار المنتجات
-const response = await fetch(`${API_URL}/api/products`);
-const data = await response.json();
   // حساب الزبون
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('customer_user');
@@ -161,6 +156,29 @@ const data = await response.json();
   useEffect(() => {
     fetchAppProducts();
   }, []);
+useEffect(() => {
+  // 1. إنشاء دالة تحمل كلمة async
+  const getProducts = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      
+      // دمج الرابط الأساسي للباك اند مع مسار للمنتجات
+      const response = await fetch(`${API_URL}/api/products`);
+      const data = await response.json();
+      
+      // هنا تضع دالة تخزين البيانات في الـ State، مثلاً:
+      // setProducts(data);
+
+    } catch (error) {
+      console.error("حدث خطأ أثناء جلب البيانات:", error);
+    }
+  };
+
+  // 2. استدعاء الدالة لتعمل
+  getProducts();
+}, []); // الأقواس الفارغة تعني أن الكود سيعمل مرة واحدة عند فتح الصفحة
+
+
 
   const handleAddToCart = (product) => {
     setCartItems(prev => {
