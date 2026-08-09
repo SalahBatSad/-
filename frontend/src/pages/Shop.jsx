@@ -13,20 +13,21 @@ export default function Shop({ onAddToCart, onQuickView }) {
 
   const categories = ['الكل', 'عطور نيش', 'عطور رجالية', 'عطور نسائية', 'العود والبخور'];
 
-  useEffect(() => {
-  fetch('https://otourna-backend.onrender.com/api/products')
-    .then(res => res.json())
-    .then(data => {
-      const enriched = data.map((item, idx) => ({
-        ...item,
-        price: Number(item.price),
-        category: item.category || 'عطور نيش',
-        image: item.image && item.image.trim() !== '' ? item.image : defaultImages[idx % defaultImages.length]
-      }));
-      setProducts(enriched);
-    })
-    .catch(err => console.error(err));
-}, []);
+  export default function Shop({ products = [], onAddToCart, onQuickView }) {
+  const [selectedCategory, setSelectedCategory] = useState('الكل');
+  const categories = ['الكل', 'عطور نيش', 'عطور رجالية', 'عطور نسائية', 'العود والبخور'];
+
+  // 🟢 هذا الجزء وجميع الأسطر القادمة بأسفل الملف تبقى كما هي تماماً!
+  const filteredProducts = selectedCategory === 'الكل'
+    ? products
+    : products.filter(product => product.category === selectedCategory);
+
+  return (
+    <div className="shop-page">
+      {/* باقي تصميم واجهة المعرض وأزرار التصنيفات كما هي عندك */}
+    </div>
+  );
+}
 // تصفية العطور بناءً على التصنيف المحدد من المستخدم
 const filteredProducts = selectedCategory === 'الكل'
   ? products

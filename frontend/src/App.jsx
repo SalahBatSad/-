@@ -151,12 +151,25 @@ export default function App() {
       })
       .catch(err => console.error(err));
   };
+const fetchAppProducts = () => {
+  fetch('https://otourna-backend.onrender.com/api/products')
+    .then(res => res.json())
+    .then(data => {
+      // 🌟 تجميع وتمرير معالجة المنتجات هنا مرة واحدة لكل التطبيق
+      const enriched = data.map((item, idx) => ({
+        ...item,
+        price: Number(item.price),
+        category: item.category || 'عطور نيش',
+        image: item.image && item.image.trim() !== '' 
+          ? item.image 
+          : defaultImages[idx % defaultImages.length]
+      }));
 
-  // تشغيل الدالة عند تحميل الصفحة لأول مرة
-  useEffect(() => {
-    fetchAppProducts();
-  }, []);
-
+      // حفظ المنتجات المعالجة في الـ State
+      setProducts(enriched);
+    })
+    .catch(err => console.error("Error fetching products:", err));
+};
   const handleAddToCart = (product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -230,7 +243,7 @@ export default function App() {
             </>
           } />
 
-          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onQuickView={(p) => setSelectedProduct(p)} />} />
+          <Route path="/shop" element={<Shop products={products} onAddToCart={handleAddToCart} onQuickView={(p) => setSelectedProduct(p)} />} />
           <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
           <Route path="/checkout" element={<Checkout cartItems={cartItems} onClearCart={() => setCartItems([])} currentUser={currentUser} />} />
         {/* 🔒 المسار السري الخاص بك كأدمن فقط */}
